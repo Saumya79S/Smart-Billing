@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Shopping Cart</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: rgb(235, 237, 241);
+    }
+
+    header, footer {
+      background-color: rgb(48, 65, 83);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    nav {
+      background-color: rgb(52, 73, 94);
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0.8rem;
+    }
+
+    nav a {
+      color: rgb(236, 240, 241);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .card img {
+      max-width: 100px;
+      height: auto;
+      margin-bottom: 1rem;
+    }
+
+    .card input {
+      width: 60px;
+      padding: 5px;
+    }
+
+    .card button {
+      margin-top: 0.5rem;
+      padding: 6px 12px;
+      background-color: rgb(44, 177, 100);
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .card button:hover {
+      background-color: rgb(60, 191, 114);
+    }
+
+    .total-section {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: rgb(223, 249, 251);
+      border: 2px dashed rgb(52, 152, 219);
+      border-radius: 10px;
+    }
+
+    .note {
+      margin-top: 1rem;
+      font-style: italic;
+      color: rgb(127, 140, 141);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <h1>🛒 Smart Shopping Cart</h1>
+  </header>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Shop</a>
+    <a href="#">Cart</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h2>Select Items to Purchase</h2>
+    <div class="products" id="product-list">
+      
+    </div>
+
+    <div class="total-section" id="bill">
+      <h3>Total: ₹<span id="total">0</span></h3>
+      <div class="note" id="note"></div>
+    </div>
+
+    <div class="breakdown" id="breakdown"></div>
+
+    <div class="note" id="note"></div>
+</div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Smart Cart Inc. | Made with ❤️
+  </footer>
+
+  <script>
+    const products = [
+      { name: "Apples", price: 200, image: "apple.png" },
+      { name: "Milk", price: 50, image: "milk.png" },
+      { name: "Bread", price: 40, image: "bread.png" },
+      { name: "Eggs", price: 6, image: "egg.png" },
+      { name: "Bananas", price: 50, image: "banana.png" },
+      { name: "Rice", price: 120, image: "rice.png" }
+    ];
+
+    const productList = document.getElementById("product-list");
+    const totalDisplay = document.getElementById("total");
+    const noteDisplay = document.getElementById("note");
+    let total = 0;
+
+    products.forEach((product, index) => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.innerHTML = `
+        <img src="${product.image}" alt="${product.name}" />
+        <h3>${product.name}</h3>
+        <p>₹${product.price} per unit</p>
+        <input type="number" id="qty-${index}" min="0" placeholder="Qty" />
+        <br />
+        <button onclick="addToCart(${index})">Add</button>
+      `;
+      productList.appendChild(card);
+    });
+
+    function addToCart(index) {
+      const qty = parseInt(document.getElementById(`qty-${index}`).value);
+      if (!isNaN(qty) && qty > 0) {
+        const cost = qty * products[index].price;
+        total += cost;
+        totalDisplay.textContent = total;
+        noteDisplay.innerHTML = `🧾 Added <strong>${qty}</strong> x <strong>${products[index].name}</strong> to your bill.`;
+        document.getElementById(`qty-${index}`).value = '';
+      } else {
+        noteDisplay.innerHTML = `<span style="color:red;">Please enter a valid quantity!</span>`;
+      }
+    }
+  </script>
+</body>
+</html>

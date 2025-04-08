@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetailEase - Billing System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #eee;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #bill-output {
+      margin-top: 30px;
+      padding: 20px;
+      background: #e7f3e7;
+      border-radius: 10px;
+    }
+    .discount {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .discount label {
+      font-weight: bold;
+    }
+    .discount input {
+      width: 60px;
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>RetailEase: Smart Billing System</h1>
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>Select</th>
+          <th>Item</th>
+          <th>Price</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody id="item-list">
+        <tr>
+          <td><input type="checkbox" class="item-check" /></td>
+          <td>Milk</td>
+          <td class="price">30</td>
+          <td><input type="number" class="quantity" value="0" min="0" /></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="item-check" /></td>
+          <td>Bread</td>
+          <td class="price">20</td>
+          <td><input type="number" class="quantity" value="0" min="0" /></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="item-check" /></td>
+          <td>Eggs</td>
+          <td class="price">5</td>
+          <td><input type="number" class="quantity" value="0" min="0" /></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="item-check" /></td>
+          <td>Rice</td>
+          <td class="price">60</td>
+          <td><input type="number" class="quantity" value="0" min="0" /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="discount">
+      <label for="discount">Discount %:</label>
+      <input type="number" id="discount" value="0" min="0" max="100" />
+    </div>
+
+    <button onclick="generateBill()">Generate Bill</button>
+    <div id="bill-output"></div>
+  </div>
+
+  <script>
+    function generateBill() {
+      const rows = document.querySelectorAll('#item-list tr');
+      const discount = parseFloat(document.getElementById('discount').value) || 0;
+      let output = '<h2>Bill Summary</h2><ul>';
+      let subtotal = 0;
+
+      rows.forEach(row => {
+        const checked = row.querySelector('.item-check').checked;
+        const item = row.cells[1].textContent;
+        const price = parseFloat(row.querySelector('.price').textContent);
+        const quantity = parseInt(row.querySelector('.quantity').value);
+
+        if (checked && quantity > 0) {
+          const itemTotal = price * quantity;
+          subtotal += itemTotal;
+          output += `<li>${item} - ${quantity} x ₹${price} = ₹${itemTotal}</li>`;
+        }
+      });
+
+      if (subtotal === 0) {
+        document.getElementById('bill-output').innerHTML = '<p>Please select at least one item and set a valid quantity to generate a bill.</p>';
+        return;
+      }
+
+      const discountAmount = (discount / 100) * subtotal;
+      const total = subtotal - discountAmount;
+
+      output += `</ul>
+        <p>Subtotal: ₹${subtotal.toFixed(2)}</p>
+        <p>Discount (${discount}%): -₹${discountAmount.toFixed(2)}</p>
+        <h3>Total: ₹${total.toFixed(2)}</h3>
+        <p>Thank you for shopping with RetailEase!</p>`;
+
+      document.getElementById('bill-output').innerHTML = output;
+    }
+  </script>
+</body>
+</html>
